@@ -68,6 +68,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -82,6 +83,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\321808__lloydevans09__pvc-pipe-hit-3.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\321802__lloydevans09__pvc-pipe-hit-4.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\432868__xtrgamr__lfs-crowdcheer.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
