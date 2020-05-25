@@ -28,8 +28,8 @@ namespace Pong3U
 
         int ballX = 295;
         int ballY = 195;
-        int ballXSpeed = 6;
-        int ballYSpeed = 6;
+        int ballXSpeed = 0;
+        int ballYSpeed = 0;
         int ballWidth = 10;
         int ballHeight = 10;
 
@@ -42,7 +42,6 @@ namespace Pong3U
         bool upArrowDown = false;
         bool downArrowDown = false;
 
-        Random randGen = new Random();
 
         SolidBrush blueBrush = new SolidBrush(Color.DodgerBlue);
         Pen bluePen = new Pen(Color.DodgerBlue, 10);
@@ -145,7 +144,7 @@ namespace Pong3U
                 paddle1Y += paddleSpeed;
             }
 
-            if (dDown == true && paddle1X < this.Width/2 - 20)
+            if (dDown == true && paddle1X < this.Width / 2 - 20)
             {
                 paddle1X += paddleSpeed;
             }
@@ -184,49 +183,65 @@ namespace Pong3U
             }
 
             //create Rectangles of objects on screen to be used for collision detection
-            Rectangle player1Rec = new Rectangle(paddle1X + paddleWidth/2, paddle1Y, paddleWidth/2, paddleHeight);
-            Rectangle player2Rec = new Rectangle(paddle2X + paddleWidth/2, paddle2Y, paddleWidth/2, paddleHeight);
-            Rectangle player2RecBack = new Rectangle(paddle2X, paddle2Y, paddleWidth / 2, paddleHeight);
+            Rectangle player1Rec = new Rectangle(paddle1X + paddleWidth / 2, paddle1Y, paddleWidth / 2, paddleHeight);
+            Rectangle player2Rec = new Rectangle(paddle2X, paddle2Y, paddleWidth / 2, paddleHeight);
+            Rectangle player2RecBack = new Rectangle(paddle2X, paddle2Y + paddleWidth / 2, paddleWidth / 2, paddleHeight);
             Rectangle player1RecBack = new Rectangle(paddle1X, paddle1Y, paddleWidth / 2, paddleHeight);
             Rectangle ballRec = new Rectangle(ballX, ballY, ballWidth, ballHeight);
 
 
-           Rectangle LTopWall = new Rectangle( 0, 0, 10, 100);
-           Rectangle LBottomWall = new Rectangle( 0, 300, 10, 100);
+            Rectangle LTopWall = new Rectangle(0, 0, 10, 100);
+            Rectangle LBottomWall = new Rectangle(0, 300, 10, 100);
 
-           Rectangle RTopWall = new Rectangle( 600, 0, 10, 100);
-           Rectangle RBottomWall = new Rectangle( 600, 300, 10, 100);
+            Rectangle RTopWall = new Rectangle(600, 0, 10, 100);
+            Rectangle RBottomWall = new Rectangle(600, 300, 10, 100);
 
             //check if ball hits either paddle. If it does change the direction
             //and place the ball in front of the paddle hit
             if (player1Rec.IntersectsWith(ballRec))
             {
-                ballXSpeed *= -1;
-                ballX = paddle1X + paddleWidth + 1;
-                hit.Play();
+                if (ballXSpeed == 0)
+                {
+                    ballXSpeed = 6;
+                    ballYSpeed = 6;
+                }
+                else
+                {
+                    ballXSpeed *= -1;
+                    ballX = ballX + 1;
+                    hit.Play();
+                }
             }
             else if (player1RecBack.IntersectsWith(ballRec))
             {
                 ballXSpeed *= -1;
-                ballX = paddle1X - ballWidth - 1;
+                ballX = ballX - 1;
                 hit.Play();
             }
-           
+
             else if (player2Rec.IntersectsWith(ballRec))
             {
-                ballXSpeed *= -1;
-                ballX = paddle2X - ballWidth - 1;
-                hit.Play();
+                if (ballXSpeed == 0)
+                {
+                    ballXSpeed = -6;
+                    ballYSpeed = 6;
+                }
+                else
+                {
+                    ballXSpeed *= -1;
+                    ballX = ballX - 3;
+                    hit.Play();
+                }
             }
             else if (player2RecBack.IntersectsWith(ballRec))
             {
                 ballXSpeed *= -1;
-                ballX = paddle2X - ballWidth + 1;
+                ballX = ballX + 1;
                 hit.Play();
             }
-            
+
             else if (ballRec.IntersectsWith(LBottomWall))
-            { 
+            {
                 ballXSpeed *= -1;
                 ballX = ballX + 5;
                 wallHit.Play();
@@ -257,21 +272,29 @@ namespace Pong3U
                 ballX = 295;
                 ballY = 195;
 
+                ballXSpeed = 0;
+                ballYSpeed = 0;
+
                 paddle1Y = 170;
                 paddle1X = 10;
                 paddle2Y = 170;
                 paddle2X = 540;
             }
-            else if (ballX > 600 )
+            else if (ballX > 600)
             {
                 goal.Play();
                 player1Score++;
+
+                ballXSpeed = 0;
+                ballYSpeed = 0;
 
                 ballX = 295;
                 ballY = 195;
 
                 paddle1Y = 170;
+                paddle1X = 10;
                 paddle2Y = 170;
+                paddle2X = 540;
             }
 
             // check score and stop game if either player is at 3
@@ -282,16 +305,16 @@ namespace Pong3U
 
             Refresh();
         }
-
+        //redraw the screen
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             Pen linePen = new Pen(Color.Gray, 3);
-            
+
             e.Graphics.DrawEllipse(linePen, -100, 100, 200, 200);
-            e.Graphics.DrawEllipse(linePen, this.Width -100, 100, 200, 200);
+            e.Graphics.DrawEllipse(linePen, this.Width - 100, 100, 200, 200);
 
             e.Graphics.DrawLine(linePen, this.Width / 2, 0, this.Width / 2, this.Height);
-            e.Graphics.DrawEllipse(linePen, this.Width/2 - 100, 100, 200, 200);
+            e.Graphics.DrawEllipse(linePen, this.Width / 2 - 100, 100, 200, 200);
 
             e.Graphics.FillEllipse(blueBrush, paddle1X, paddle1Y, paddleWidth, paddleHeight);
             e.Graphics.FillEllipse(blueBrush, paddle2X, paddle2Y, paddleWidth, paddleHeight);
@@ -303,7 +326,7 @@ namespace Pong3U
 
             e.Graphics.DrawLine(bluePen, 0, 0, 0, 100);
             e.Graphics.DrawLine(bluePen, 0, 400, 0, 300);
-            
+
             e.Graphics.DrawLine(bluePen, 600, 0, 600, 100);
             e.Graphics.DrawLine(bluePen, 600, 400, 600, 300);
         }
